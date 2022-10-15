@@ -65,34 +65,12 @@ function showCountryDetailInfo(countryObj) {
             </ul>
           </div>
       `;
-  //   listCountries.innerHTML = '';
-  //   countryInfo.innerHTML = `
-  //           <div class="country-info">
-  //             <div class="country-holder">
-  //                 <img class="country-flag" width="40"  src="${
-  //                   countryObj.flags.svg
-  //                 }">
-  //                 <p class="country-name-big"> ${countryObj.name.common}</p>
-  //             </div>
 
-  //             <ul>
-  //                 <li class="country-detail-item"><b>Capital:</b> ${
-  //                   countryObj.capital
-  //                 }</li>
-  //                 <li class="country-detail-item"><b>Population:</b> ${
-  //                   countryObj.population
-  //                 }</li>
-  //                 <li class="country-detail-item"><b>Languages:</b> ${fetchLanguages(
-  //                   countryObj.languages
-  //                 )}</li>
-  //             </ul>
-  //           </div>
-  //       `;
   setInfo(countryInfo, html);
 }
 
 function showCountryList(arrCountries) {
-  countryInfo.innerHTML = '';
+  setInfo();
   const markup = arrCountries
     .map(country => {
       return `
@@ -103,7 +81,7 @@ function showCountryList(arrCountries) {
       `;
     })
     .join('');
-  listCountries.innerHTML = markup;
+  setInfo(listCountries, markup);
 }
 
 function renderUserList(countries) {
