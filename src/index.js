@@ -9,28 +9,33 @@ const searchInput = document.querySelector('#search-box');
 const listCountries = document.querySelector('.country-list');
 const countryInfo = document.querySelector('.country-info');
 
-searchInput.addEventListener(
-  'input',
-  debounce(() => {
-    if (searchInput.value.length > 0) {
-      fetchCountries(searchInput.value)
-        .then(users => renderUserList(users))
-        .catch(error => {
-          //   console.log(error);
-          if (error == 'Error: 404') {
-            resetInfo();
-            Notify.failure('Oops, there is no country with that name');
-          }
-        });
-    } else {
-      resetInfo();
-    }
-  }, DEBOUNCE_DELAY)
-);
+searchInput.addEventListener('input', debounce(onSearch, DEBOUNCE_DELAY));
 
-function resetInfo() {
+function onSearch() {
+  const searchTerm = searchInput.value.trim();
+  if (searchTerm === '') {
+    setInfo();
+    return;
+  }
+  if (searchInput.value.length > 0) {
+    fetchCountries(searchTerm)
+      .then(users => renderUserList(users))
+      .catch(error => {
+        setInfo();
+        Notify.failure('Oops, there is no country with that name');
+      });
+  } else {
+    setInfo();
+  }
+}
+
+function setInfo(obj, html = '') {
   listCountries.innerHTML = '';
   countryInfo.innerHTML = '';
+  if (obj === undefined) {
+    return;
+  }
+  obj.innerHTML = html;
 }
 
 function fetchLanguages(languagesObj) {
@@ -38,8 +43,7 @@ function fetchLanguages(languagesObj) {
 }
 
 function showCountryDetailInfo(countryObj) {
-  listCountries.innerHTML = '';
-  countryInfo.innerHTML = `
+  const html = `
           <div class="country-info">
             <div class="country-holder">
                 <img class="country-flag" width="40"  src="${
@@ -61,6 +65,30 @@ function showCountryDetailInfo(countryObj) {
             </ul>
           </div>
       `;
+  //   listCountries.innerHTML = '';
+  //   countryInfo.innerHTML = `
+  //           <div class="country-info">
+  //             <div class="country-holder">
+  //                 <img class="country-flag" width="40"  src="${
+  //                   countryObj.flags.svg
+  //                 }">
+  //                 <p class="country-name-big"> ${countryObj.name.common}</p>
+  //             </div>
+
+  //             <ul>
+  //                 <li class="country-detail-item"><b>Capital:</b> ${
+  //                   countryObj.capital
+  //                 }</li>
+  //                 <li class="country-detail-item"><b>Population:</b> ${
+  //                   countryObj.population
+  //                 }</li>
+  //                 <li class="country-detail-item"><b>Languages:</b> ${fetchLanguages(
+  //                   countryObj.languages
+  //                 )}</li>
+  //             </ul>
+  //           </div>
+  //       `;
+  setInfo(countryInfo, html);
 }
 
 function showCountryList(arrCountries) {
